@@ -1,13 +1,15 @@
 import styled from "styled-components"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function Cadastro() {
     const [clicado, setClicado] = useState(false);
     const [cadastro, setCadastro] = useState({ nome: "", email: "", senha: "", senhaConfirmada: "" });
+    const navigate = useNavigate();
     function cadastrar(event) {
         event.preventDefault();
         setClicado(true);
+        navigate("/")
     }
     return (
         <ContainerCadastro>

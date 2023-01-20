@@ -1,13 +1,15 @@
 import styled from "styled-components"
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 export default function Login() {
     const [clicado, setClicado] = useState(false);
     const [login, setLogin] = useState({ email: "", password: "" });
+    const navigate = useNavigate();
     function entrar(event) {
         event.preventDefault();
         setClicado(true);
+        navigate("/home");
     }
     return (
         <ContainerLogin>
