@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function NovaSaida(){
     const [clicado, setClicado] = useState(false);
-    const [entrada, setEntrada] = useState({ valor: "", descricao: "" });
+    const [saida, setSaida] = useState({ valor: "", descricao: "" });
     const navigate = useNavigate();
     function salvar(event) {
         event.preventDefault();
@@ -17,8 +17,8 @@ export default function NovaSaida(){
                 Nova saída
             </Topo>
             <Formulario onSubmit={salvar} clicado={clicado}>
-                <input disabled={clicado} required type="number" placeholder="Valor" min="0.01" step="0.01" value={entrada.valor} onChange={e => setEntrada({ ...entrada, valor: e.target.value })} />
-                <input disabled={clicado} required type="text" placeholder="Descrição" value={entrada.descricao} onChange={e => setEntrada({ ...entrada, descricao: e.target.value })}/>
+                <input disabled={clicado} required type="number" placeholder="Valor" min="0.01" step="0.01" value={saida.valor} onChange={e => setSaida({ ...saida, valor: e.target.value })} />
+                <input disabled={clicado} required type="text" placeholder="Descrição" value={saida.descricao} onChange={e => setSaida({ ...saida, descricao: e.target.value })}/>
                 <button disabled={clicado} type="submit">Salvar saída</button>
             </Formulario>
         </ContainerSaida>

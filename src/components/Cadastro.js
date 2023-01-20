@@ -1,6 +1,7 @@
 import styled from "styled-components"
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import axios from 'axios';
 
 export default function Cadastro() {
     const [clicado, setClicado] = useState(false);
@@ -9,7 +10,9 @@ export default function Cadastro() {
     function cadastrar(event) {
         event.preventDefault();
         setClicado(true);
-        navigate("/")
+        const requisicao = axios.post(`${process.env.REACT_APP_API_URL}/cadastro`, cadastro);
+        requisicao.then(() => navigate("/"));
+        requisicao.catch((res) => { alert(res.response.data); setClicado(false); });
     }
     return (
         <ContainerCadastro>

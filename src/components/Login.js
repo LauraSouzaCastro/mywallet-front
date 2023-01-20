@@ -1,15 +1,24 @@
 import styled from "styled-components"
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
+import { useContext } from 'react';
+import { UsuarioContext } from '../contexts/UsuarioContext.js';
+import axios from 'axios';
 
 export default function Login() {
     const [clicado, setClicado] = useState(false);
     const [login, setLogin] = useState({ email: "", senha: "" });
+    const { setUsuario } = useContext(UsuarioContext);
     const navigate = useNavigate();
     function entrar(event) {
         event.preventDefault();
         setClicado(true);
-        navigate("/home");
+        const requisicao = axios.post(`${process.env.REACT_APP_API_URL}/`, login);
+        requisicao.then((res) => {
+            setUsuario(res.data);
+            navigate("/hoje");
+        });
+        requisicao.catch((res) => { alert(res.response.data); setClicado(false); });
     }
     return (
         <ContainerLogin>
