@@ -4,7 +4,7 @@ import { useState } from "react";
 
 export default function Login() {
     const [clicado, setClicado] = useState(false);
-    const [login, setLogin] = useState({ email: "", password: "" });
+    const [login, setLogin] = useState({ email: "", senha: "" });
     const navigate = useNavigate();
     function entrar(event) {
         event.preventDefault();
@@ -16,7 +16,7 @@ export default function Login() {
             <h1>MyWallet</h1>
             <Formulario onSubmit={entrar} clicado={clicado}>
                 <input disabled={clicado} required type="email" placeholder="E-mail" value={login.email} onChange={e => setLogin({ ...login, email: e.target.value })} />
-                <input disabled={clicado} required type="password" placeholder="Senha" value={login.password} onChange={e => setLogin({ ...login, password: e.target.value })}/>
+                <input disabled={clicado} required type="password" placeholder="Senha" value={login.senha} onChange={e => setLogin({ ...login, senha: e.target.value })}/>
                 <button disabled={clicado} type="submit">Entrar</button>
             </Formulario>
             <Link to="/cadastro">Primeira vez? Cadastre-se!</Link>
