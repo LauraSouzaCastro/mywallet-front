@@ -9,9 +9,10 @@ export default function Home(){
     const navigate = useNavigate();
     const { usuario } = useContext(UsuarioContext);
     const [registros, setRegistros] = useState([]);
+    const [saldo, setSaldo] = useState([]);
     useEffect(() => {
         const requisicao = axios.get(`${process.env.REACT_APP_API_URL}/home`, { headers: { 'Authorization': `Bearer ${usuario.token}` } });
-        requisicao.then((res) => setRegistros(res.data));
+        requisicao.then((res) => {setRegistros(res.data.registros); setSaldo(res.data.saldo);});
         requisicao.catch((res) => { alert(res.response.data); });
     }, [ usuario.token]);
 
@@ -28,8 +29,9 @@ export default function Home(){
                 <ion-icon name="log-out-outline"></ion-icon>
             </Topo>
             <ContainerRegistros registros={registros}>
-                {registros.map(m => <span key={m._id}>{m.valor}</span>)}
+                <Registros>{registros.map(m => <Registro key={m._id}><span><Data>{m.data}</Data>{m.descricao}</span><Valor tipo={m.tipo}>{m.valor}</Valor></Registro>)}</Registros>
                 <p>Não há registros de<br/>entrada ou saída</p>
+                <span><strong>SALDO</strong><Saldo saldo={saldo}>{saldo}</Saldo></span>
             </ContainerRegistros>
             <Rodape>
                 <div onClick={adicionarEntrada}>
@@ -107,6 +109,8 @@ const ContainerRegistros = styled.div`
     height: 66vh;
     display: flex;
     flex-direction: column;
+    padding: 10px 0px;
+    justify-content: space-between;
     p{
         font-family: 'Raleway';
         font-style: normal;
@@ -118,4 +122,45 @@ const ContainerRegistros = styled.div`
         margin: auto;
         display: ${props => props.registros.length === 0 ? "flex" : "none"};
     }
+    strong{
+        font-family: 'Raleway';
+        font-weight: 700;
+        font-size: 17px;
+        margin: 0px 15px;
+    }
+    span{
+        display: flex;
+        justify-content: space-between;
+    }
+
+`;
+const Registro = styled.div`
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0px;
+    font-family: 'Raleway';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+    color: #000000;
+`;
+
+const Data = styled.span`
+    color: #C6C6C6;
+    margin-right: 10px;
+`;
+const Valor = styled.span`
+    color: ${props => props.tipo === 'saida' ? '#C70000' : '#03AC00'};
+`;
+const Saldo = styled.span`
+    color: ${props => props.saldo < 0 ? '#C70000' : '#03AC00'};
+    padding-right: 11px;
+`;
+
+const Registros = styled.div`
+    width: 100%;
+    height: 58vh;
+    overflow-y: scroll;
+    padding: 0px 12px
 `;

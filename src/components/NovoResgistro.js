@@ -5,13 +5,13 @@ import { UsuarioContext } from '../contexts/UsuarioContext.js';
 import axios from 'axios';
 export default function NovoRegistro({tipo}){
     const [clicado, setClicado] = useState(false);
-    const [registro, setRegistro] = useState({ valor: "", descricao: "", tipo });
+    const [registro, setRegistro] = useState({ valor: "", descricao: "" });
     const { usuario } = useContext(UsuarioContext);
     const navigate = useNavigate();
     function salvar(event) {
         event.preventDefault();
         setClicado(true);
-        const requisicao = axios.post(`${process.env.REACT_APP_API_URL}/nova-${tipo}`, registro, { headers: { 'Authorization': `Bearer ${usuario.token}` } });
+        const requisicao = axios.post(`${process.env.REACT_APP_API_URL}/nova-${tipo}`, {valor: parseFloat(registro.valor).toFixed(2), descricao: registro.descricao, tipo}, { headers: { 'Authorization': `Bearer ${usuario.token}` } });
         requisicao.then(() => { setClicado(false); });
         requisicao.catch((res) => { alert(res.response.data.message); setClicado(false); });
         navigate("/home");
