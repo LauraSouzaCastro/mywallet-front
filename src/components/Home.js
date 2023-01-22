@@ -34,7 +34,7 @@ export default function Home(){
                 <span onClick={sair}><ion-icon name="log-out-outline"></ion-icon></span>
             </Topo>
             <ContainerRegistros registros={registros}>
-                <Registros>{registros.map(m => <Registro key={m._id}><span><Data>{m.data}</Data>{m.descricao}</span><Valor tipo={m.tipo}>{m.valor}</Valor></Registro>)}</Registros>
+                <Registros registros={registros}>{registros.map(m => <Registro key={m._id}><span><Data>{m.data}</Data>{m.descricao}</span><Valor tipo={m.tipo}>{m.valor}</Valor></Registro>)}</Registros>
                 <p>Não há registros de<br/>entrada ou saída</p>
                 <span><strong>SALDO</strong><Saldo saldo={saldo}>{saldo}</Saldo></span>
             </ContainerRegistros>
@@ -136,6 +136,7 @@ const ContainerRegistros = styled.div`
     span{
         display: flex;
         justify-content: space-between;
+        display: ${props => props.registros.length === 0 ? "none" : "flex"};
     }
 
 `;
@@ -167,5 +168,7 @@ const Registros = styled.div`
     width: 100%;
     height: 58vh;
     overflow-y: scroll;
-    padding: 0px 12px
+    padding: 0px 12px;
+    display: ${props => props.registros.length === 0 ? "none" : "flex"};
+    flex-direction: column;
 `;
