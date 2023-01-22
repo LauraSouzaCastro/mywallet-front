@@ -28,7 +28,7 @@ export default function Home(){
                 <ion-icon name="log-out-outline"></ion-icon>
             </Topo>
             <ContainerRegistros registros={registros}>
-                {registros.map(m => <span>{m}</span>)}
+                {registros.map(m => <span key={m._id}>{m.valor}</span>)}
                 <p>Não há registros de<br/>entrada ou saída</p>
             </ContainerRegistros>
             <Rodape>

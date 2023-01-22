@@ -1,31 +1,36 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
-
-export default function NovaSaida(){
+import { useState, useContext } from "react";
+import { UsuarioContext } from '../contexts/UsuarioContext.js';
+import axios from 'axios';
+export default function NovoRegistro({tipo}){
     const [clicado, setClicado] = useState(false);
-    const [saida, setSaida] = useState({ valor: "", descricao: "" });
+    const [registro, setRegistro] = useState({ valor: "", descricao: "", tipo });
+    const { usuario } = useContext(UsuarioContext);
     const navigate = useNavigate();
     function salvar(event) {
         event.preventDefault();
         setClicado(true);
+        const requisicao = axios.post(`${process.env.REACT_APP_API_URL}/nova-${tipo}`, registro, { headers: { 'Authorization': `Bearer ${usuario.token}` } });
+        requisicao.then(() => { setClicado(false); });
+        requisicao.catch((res) => { alert(res.response.data.message); setClicado(false); });
         navigate("/home");
     }
     return (
-        <ContainerSaida>
+        <ContainerEntrada>
             <Topo>
-                Nova saída
+                Nova {tipo === 'saida' ? 'saída' : 'entrada'}
             </Topo>
             <Formulario onSubmit={salvar} clicado={clicado}>
-                <input disabled={clicado} required type="number" placeholder="Valor" min="0.01" step="0.01" value={saida.valor} onChange={e => setSaida({ ...saida, valor: e.target.value })} />
-                <input disabled={clicado} required type="text" placeholder="Descrição" value={saida.descricao} onChange={e => setSaida({ ...saida, descricao: e.target.value })}/>
-                <button disabled={clicado} type="submit">Salvar saída</button>
+                <input disabled={clicado} required type="number" placeholder="Valor" min="0.01" step="0.01" value={registro.valor} onChange={e => setRegistro({ ...registro, valor: e.target.value })} />
+                <input disabled={clicado} required type="text" placeholder="Descrição" value={registro.descricao} onChange={e => setRegistro({ ...registro, descricao: e.target.value })}/>
+                <button disabled={clicado} type="submit">Salvar {tipo === 'saida' ? 'saída' : 'entrada'}</button>
             </Formulario>
-        </ContainerSaida>
+        </ContainerEntrada>
     );
 }
 
-const ContainerSaida = styled.div`
+const ContainerEntrada = styled.div`
     min-height: 100vh;
     background-color: #8C11BE;
     padding: 25px 24px 16px 24px;
