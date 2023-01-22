@@ -22,11 +22,16 @@ export default function Home(){
     function adicionarSaida(){
         navigate("/nova-saida");
     }
+    function sair(){
+        const requisicao = axios.delete(`${process.env.REACT_APP_API_URL}/home`, { headers: { 'Authorization': `Bearer ${usuario.token}` } });
+        requisicao.then((res) => {navigate("/");});
+        requisicao.catch((res) => { alert(res.response.data); });
+    }
     return (
         <ContainerHome>
             <Topo>
                 <h1>Olá, {usuario.nome}</h1>
-                <ion-icon name="log-out-outline"></ion-icon>
+                <span onClick={sair}><ion-icon name="log-out-outline"></ion-icon></span>
             </Topo>
             <ContainerRegistros registros={registros}>
                 <Registros>{registros.map(m => <Registro key={m._id}><span><Data>{m.data}</Data>{m.descricao}</span><Valor tipo={m.tipo}>{m.valor}</Valor></Registro>)}</Registros>
