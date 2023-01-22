@@ -1,8 +1,20 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { UsuarioContext } from '../contexts/UsuarioContext.js';
+import { useContext, useEffect } from 'react';
+import { useState } from "react";
+import axios from 'axios';
 
 export default function Home(){
     const navigate = useNavigate();
+    const { usuario } = useContext(UsuarioContext);
+    const [registros, setRegistros] = useState([]);
+    useEffect(() => {
+        const requisicao = axios.get(`${process.env.REACT_APP_API_URL}/home`, { headers: { 'Authorization': `Bearer ${usuario.token}` } });
+        requisicao.then((res) => setRegistros(res.data));
+        requisicao.catch((res) => { alert(res.response.data); });
+    }, [ usuario.token]);
+
     function adicionarEntrada(){
         navigate("/nova-entrada");
     }
@@ -12,10 +24,11 @@ export default function Home(){
     return (
         <ContainerHome>
             <Topo>
-                <h1>Olá, Fulano</h1>
+                <h1>Olá, {usuario.nome}</h1>
                 <ion-icon name="log-out-outline"></ion-icon>
             </Topo>
-            <ContainerRegistros>
+            <ContainerRegistros registros={registros}>
+                {registros.map(m => <span>{m}</span>)}
                 <p>Não há registros de<br/>entrada ou saída</p>
             </ContainerRegistros>
             <Rodape>
@@ -103,5 +116,6 @@ const ContainerRegistros = styled.div`
         text-align: center;
         color: #868686;
         margin: auto;
+        display: ${props => props.registros.length === 0 ? "flex" : "none"};
     }
 `;

@@ -16,7 +16,7 @@ export default function Login() {
         const requisicao = axios.post(`${process.env.REACT_APP_API_URL}/`, login);
         requisicao.then((res) => {
             setUsuario(res.data);
-            navigate("/hoje");
+            navigate("/home");
         });
         requisicao.catch((res) => { alert(res.response.data); setClicado(false); });
     }
