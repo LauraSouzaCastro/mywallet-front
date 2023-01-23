@@ -1,13 +1,20 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useState, useContext } from "react";
-import { UsuarioContext } from '../contexts/UsuarioContext.js';
+import { useState, useEffect } from "react";
 import axios from 'axios';
 export default function NovoRegistro({tipo}){
     const [clicado, setClicado] = useState(false);
     const [registro, setRegistro] = useState({ valor: "", descricao: "" });
-    const { usuario } = useContext(UsuarioContext);
+    const [usuario, setUsuario] = useState([]);
     const navigate = useNavigate();
+    useEffect(() => {
+        const localUsuarioObj = localStorage.getItem("localUsuario");
+        if (localUsuarioObj) {
+            setUsuario(JSON.parse(localUsuarioObj));
+        }else{
+            navigate("/");
+        }
+    }, [ setUsuario, navigate ]);
     function salvar(event) {
         event.preventDefault();
         setClicado(true);
@@ -22,9 +29,9 @@ export default function NovoRegistro({tipo}){
                 Nova {tipo === 'saida' ? 'saída' : 'entrada'}
             </Topo>
             <Formulario onSubmit={salvar} clicado={clicado}>
-                <input disabled={clicado} required type="number" placeholder="Valor" min="0.01" step="0.01" value={registro.valor} onChange={e => setRegistro({ ...registro, valor: e.target.value })} />
-                <input disabled={clicado} required type="text" placeholder="Descrição" value={registro.descricao} onChange={e => setRegistro({ ...registro, descricao: e.target.value })}/>
-                <button disabled={clicado} type="submit">Salvar {tipo === 'saida' ? 'saída' : 'entrada'}</button>
+                <input disabled={clicado} required type="number" placeholder="Valor" min="0.01" step="0.01" value={registro.valor} onChange={e => setRegistro({ ...registro, valor: e.target.value })} data-test="registry-amount-input"/>
+                <input disabled={clicado} required type="text" placeholder="Descrição" value={registro.descricao} onChange={e => setRegistro({ ...registro, descricao: e.target.value })} data-test="registry-name-input"/>
+                <button disabled={clicado} type="submit" data-test="registry-save">Salvar {tipo === 'saida' ? 'saída' : 'entrada'}</button>
             </Formulario>
         </ContainerEntrada>
     );

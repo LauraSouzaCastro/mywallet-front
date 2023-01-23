@@ -1,21 +1,25 @@
 import styled from "styled-components"
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
-import { useContext } from 'react';
-import { UsuarioContext } from '../contexts/UsuarioContext.js';
+import { useState, useEffect } from "react";
 import axios from 'axios';
 
 export default function Login() {
     const [clicado, setClicado] = useState(false);
     const [login, setLogin] = useState({ email: "", senha: "" });
-    const { setUsuario } = useContext(UsuarioContext);
     const navigate = useNavigate();
+    useEffect(() => {
+        const localUsuarioObj = localStorage.getItem("localUsuario");
+        if (localUsuarioObj) {
+            navigate("/home");
+        }
+    }, [navigate]);
     function entrar(event) {
         event.preventDefault();
         setClicado(true);
         const requisicao = axios.post(`${process.env.REACT_APP_API_URL}/`, login);
         requisicao.then((res) => {
-            setUsuario(res.data);
+            const localUsuarioObj = JSON.stringify(res.data);
+            localStorage.setItem("localUsuario", localUsuarioObj);
             navigate("/home");
         });
         requisicao.catch((res) => { alert(res.response.data); setClicado(false); });
@@ -24,9 +28,9 @@ export default function Login() {
         <ContainerLogin>
             <h1>MyWallet</h1>
             <Formulario onSubmit={entrar} clicado={clicado}>
-                <input disabled={clicado} required type="email" placeholder="E-mail" value={login.email} onChange={e => setLogin({ ...login, email: e.target.value })} />
-                <input disabled={clicado} required type="password" placeholder="Senha" value={login.senha} onChange={e => setLogin({ ...login, senha: e.target.value })}/>
-                <button disabled={clicado} type="submit">Entrar</button>
+                <input disabled={clicado} required type="email" placeholder="E-mail" value={login.email} onChange={e => setLogin({ ...login, email: e.target.value })} data-test="email"/>
+                <input disabled={clicado} required type="password" placeholder="Senha" value={login.senha} onChange={e => setLogin({ ...login, senha: e.target.value })} data-test="password"/>
+                <button disabled={clicado} type="submit" data-test="sign-in-submit">Entrar</button>
             </Formulario>
             <Link to="/cadastro">Primeira vez? Cadastre-se!</Link>
         </ContainerLogin>

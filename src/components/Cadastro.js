@@ -18,11 +18,11 @@ export default function Cadastro() {
         <ContainerCadastro>
             <h1>MyWallet</h1>
             <Formulario onSubmit={cadastrar} clicado={clicado}>
-                <input disabled={clicado} required type="text" placeholder="Nome" value={cadastro.nome} onChange={e => setCadastro({ ...cadastro, nome: e.target.value })}/>
-                <input disabled={clicado} required type="email" placeholder="E-mail" value={cadastro.email} onChange={e => setCadastro({ ...cadastro, email: e.target.value })}/>
-                <input disabled={clicado} required type="password" placeholder="Senha" value={cadastro.senha} onChange={e => setCadastro({ ...cadastro, senha: e.target.value })}/>
-                <input disabled={clicado} required type="password" placeholder="Confirme a senha" value={cadastro.senhaConfirmada} onChange={e => setCadastro({ ...cadastro, senhaConfirmada: e.target.value })}/>
-                <button disabled={clicado} type="submit">Cadastrar</button>
+                <input disabled={clicado} required type="text" placeholder="Nome" value={cadastro.nome} onChange={e => setCadastro({ ...cadastro, nome: e.target.value })} data-test="name"/>
+                <input disabled={clicado} required type="email" placeholder="E-mail" value={cadastro.email} onChange={e => setCadastro({ ...cadastro, email: e.target.value })} data-test="email"/>
+                <input disabled={clicado} required type="password" placeholder="Senha" value={cadastro.senha} onChange={e => setCadastro({ ...cadastro, senha: e.target.value })} data-test="password"/>
+                <input disabled={clicado} required type="password" placeholder="Confirme a senha" value={cadastro.senhaConfirmada} onChange={e => setCadastro({ ...cadastro, senhaConfirmada: e.target.value })} data-test="conf-password"/>
+                <button disabled={clicado} type="submit" data-test="sign-up-submit">Cadastrar</button>
             </Formulario>
             <Link to="/">Já tem uma conta? Entre agora!</Link>
         </ContainerCadastro>

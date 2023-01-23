@@ -1,20 +1,24 @@
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { UsuarioContext } from '../contexts/UsuarioContext.js';
-import { useContext, useEffect } from 'react';
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from 'axios';
 
 export default function Home(){
     const navigate = useNavigate();
-    const { usuario } = useContext(UsuarioContext);
+    const [ usuario, setUsuario ] = useState([]);
     const [registros, setRegistros] = useState([]);
     const [saldo, setSaldo] = useState([]);
     useEffect(() => {
-        const requisicao = axios.get(`${process.env.REACT_APP_API_URL}/home`, { headers: { 'Authorization': `Bearer ${usuario.token}` } });
-        requisicao.then((res) => {setRegistros(res.data.registros); setSaldo(res.data.saldo);});
-        requisicao.catch((res) => { alert(res.response.data); });
-    }, [ usuario.token]);
+        const localUsuarioObj = localStorage.getItem("localUsuario");
+        if (localUsuarioObj) {
+            setUsuario(JSON.parse(localUsuarioObj));
+            const requisicao = axios.get(`${process.env.REACT_APP_API_URL}/home`, { headers: { 'Authorization': `Bearer ${JSON.parse(localUsuarioObj).token}` } });
+            requisicao.then((res) => {setRegistros(res.data.registros); setSaldo(res.data.saldo);});
+            requisicao.catch((res) => { alert(res.response.data); });
+        }else{
+            navigate("/");
+        }
+    }, [ setUsuario, navigate ]);
 
     function adicionarEntrada(){
         navigate("/nova-entrada");
@@ -23,6 +27,7 @@ export default function Home(){
         navigate("/nova-saida");
     }
     function sair(){
+        localStorage.removeItem("localUsuario");
         const requisicao = axios.delete(`${process.env.REACT_APP_API_URL}/home`, { headers: { 'Authorization': `Bearer ${usuario.token}` } });
         requisicao.then((res) => {navigate("/");});
         requisicao.catch((res) => { alert(res.response.data); });
@@ -30,20 +35,20 @@ export default function Home(){
     return (
         <ContainerHome>
             <Topo>
-                <h1>Olá, {usuario.nome}</h1>
-                <span onClick={sair}><ion-icon name="log-out-outline"></ion-icon></span>
+                <h1 data-test="user-name">Olá, {usuario.nome}</h1>
+                <span onClick={sair} data-test="logout"><ion-icon name="log-out-outline"></ion-icon></span>
             </Topo>
             <ContainerRegistros registros={registros}>
-                <Registros registros={registros}>{registros.map(m => <Registro key={m._id}><span><Data>{m.data}</Data>{m.descricao}</span><Valor tipo={m.tipo}>{m.valor}</Valor></Registro>)}</Registros>
+                <Registros registros={registros}>{registros.map(m => <Registro key={m._id}><span data-test="registry-name"><Data>{m.data}</Data>{m.descricao}</span><Valor tipo={m.tipo} data-test="registry-amount">{m.valor.split(".").join(",")}</Valor></Registro>)}</Registros>
                 <p>Não há registros de<br/>entrada ou saída</p>
-                <span><strong>SALDO</strong><Saldo saldo={saldo}>{saldo}</Saldo></span>
+                <span><strong>SALDO</strong><Saldo saldo={saldo} data-test="total-amount">{saldo}</Saldo></span>
             </ContainerRegistros>
             <Rodape>
-                <div onClick={adicionarEntrada}>
+                <div onClick={adicionarEntrada} data-test="new-income">
                     <ion-icon name="add-circle-outline"></ion-icon>
                     <p>Nova<br/>entrada</p>
                 </div>
-                <div onClick={adicionarSaida}>
+                <div onClick={adicionarSaida} data-test="new-expense">
                     <ion-icon name="remove-circle-outline"></ion-icon>
                     <p>Nova<br/>saída</p>
                 </div>
